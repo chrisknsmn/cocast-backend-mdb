@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose';
 import express from 'express';
 import cors from "cors";
 import { User } from './schema';
+import { exec } from 'child_process';
 
 const app = express();
 const PORT = 5000;
@@ -12,10 +13,6 @@ let data: any = [];  // Outside the async function, accessible to any route
 app.use(cors());
 app.use(express.json());
 
-// app.get("/", (req, res) => {
-//   res.send("Hello World!");
-// });
-
 (async () => {
   
   try {
@@ -25,7 +22,7 @@ app.use(express.json());
 
     // Fetch data from database
     const user = await User.find();
-    user[0]?.getName();
+    // user[0]?.getName();
     data = user;
 
     app.get("/data", (req, res) => {
@@ -65,3 +62,12 @@ app.use(express.json());
   }
 
 })();
+
+//Add python scripts
+exec('python3 server/service.py', (error, stdout) => {
+  if (error) {
+    console.error(`Error executing script: ${error}`);
+    return;
+  }
+  console.log(`From PY: ${stdout}`);
+});
